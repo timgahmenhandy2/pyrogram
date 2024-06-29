@@ -221,18 +221,31 @@ def get_raw_peer_id(peer: raw.base.Peer) -> Optional[int]:
     return None
 
 
-def get_peer_id(peer: raw.base.Peer) -> int:
-    """Get the non-raw peer id from a Peer object"""
-    if isinstance(peer, raw.types.PeerUser):
-        return peer.user_id
-
-    if isinstance(peer, raw.types.PeerChat):
-        return -peer.chat_id
-
-    if isinstance(peer, raw.types.PeerChannel):
-        return MAX_CHANNEL_ID - peer.channel_id
+def get_peer_type_new(peer_id: int) -> str:
+    peer_id_str = str(peer_id)
+    if not peer_id_str.startswith("-"):
+        return "user"
+    elif peer_id_str.startswith("-100"):
+        return "channel"
+    else:
+        return "chat"
 
     raise ValueError(f"Peer type invalid: {peer}")
+    
+utils.get_peer_type = get_peer_type_new
+
+#def get_peer_id(peer: raw.base.Peer) -> int:
+ #   """Get the non-raw peer id from a Peer object"""
+#    if isinstance(peer, raw.types.PeerUser):
+#        return peer.user_id
+
+ #   if isinstance(peer, raw.types.PeerChat):
+#        return -peer.chat_id
+
+#    if isinstance(peer, raw.types.PeerChannel):
+ #       return MAX_CHANNEL_ID - peer.channel_id
+
+#    raise ValueError(f"Peer type invalid: {peer}")
 
 
 def get_peer_type(peer_id: int) -> str:
